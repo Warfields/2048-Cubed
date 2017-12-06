@@ -29,6 +29,7 @@ GPIO.setup(RCLK, GPIO.OUT)
 GPIO.output(SRCLK,1)
 GPIO.output(SER,1)
 GPIO.output(RCLK,1)
+time.sleep(.0005)
 GPIO.output(SRCLK,0)
 GPIO.output(SER,0)
 GPIO.output(RCLK,0)
@@ -48,6 +49,7 @@ def updateOut(matrix):
                 for j in range (0,4): # Colomn
                     loop+=1
                     GPIO.output(SRCLK,1)
+                    time.sleep(.0005)
                     GPIO.output(SRCLK,0)
                     if c == 0 & (0):
                         print "1"
@@ -63,6 +65,7 @@ def updateOut(matrix):
 
     #Clock Register
     GPIO.output(RCLK, 1)
+    time.sleep(.0005)
     GPIO.output(RCLK, 0)
     
     #isldfkjgdfhkjgsdj
