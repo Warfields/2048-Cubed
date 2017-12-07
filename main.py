@@ -21,7 +21,7 @@ bBack = 19
 
 GPIO.setmode(GPIO.BCM)
 
-#turn off the warnings, this is optional
+#turn off the warnings
 
 GPIO.setwarnings(False)
 
@@ -32,13 +32,15 @@ GPIO.setup(bDown, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(bLeft, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(bRight, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(bForward, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(bback, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(bBack, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 #setup the serial lines
 
 GPIO.setup(SER, GPIO.OUT)
 GPIO.setup(SRCLK, GPIO.OUT)
 GPIO.setup(RCLK, GPIO.OUT)
+
+#Clock Shift Registers to intialize them
 
 GPIO.output(SRCLK,1)
 GPIO.output(SER,1)
@@ -48,20 +50,18 @@ GPIO.output(SRCLK,0)
 GPIO.output(SER,0)
 GPIO.output(RCLK,0)
 
-fris = game()
+fris = game() #intailize a game object
 
-#def serialOut
+def updateOut(matrix): # send changes to LED matrix
+    #TODO GENERATE COLOR SCHEME
+    GPIO.output(RCLK, 0) # enable serail stream to registers
 
-def updateOut(matrix):
-    #Pick Color
-    GPIO.output(SER,1)
-    #Shift out data
-    loop = 0
-    for c in range(0,3): # for each of 3 colors
-        for k in range (0,4): # go up the individual levels
+    for c in range(0,3): # for each of 3 colors (Red then green then blue)
+        for k in range (0,4): # For each level
             for i in range (0,4): # Row
                 for j in range (0,4): # Colomn
-                    loop+=1
+                    #begin data shift out; TODO: Finish this code
+                    loop += 1
                     GPIO.output(SRCLK,1)
                     time.sleep(.0005)
                     GPIO.output(SRCLK,0)
@@ -77,33 +77,25 @@ def updateOut(matrix):
                         #Blue
                         print 3
 
-    #Clock Register
+    #Clock Register. This latches the current state of the serial buffer to the output
+    #register, updating the cube;
     GPIO.output(RCLK, 1)
-    time.sleep(.0005)
-    GPIO.output(RCLK, 0)
-    
-    #isldfkjgdfhkjgsdj
 
-while(not (fris.isWon())):
-    fris.printBoard()
-    movement_choice = raw_input("Make your move::::>>>>    ") #Taking user input for the movement choice
+while(not (fris.isWon())): # main game loop
+    fris.printBoard() # prints the current game board to terminal (Debug / if you don't have an LED Cube)
+    movement_choice = input("Make your move::::>>>>    ") #Taking user input for the movement choice
+    #TODO update If statements
     if movement_choice == "w":
         fris.up_movement()
-        #fris.up_addition()
     elif movement_choice == "s":
         fris.down_movement()
-        #fris.down_addition()
     elif movement_choice == "a":
         fris.left_movement()
-        #ris.left_addition()
     elif movement_choice == "d":
         fris.right_movement()
-       # fris.right_addition()
     elif movement_choice == ",":
         fris.forward_movement()
-     #   fris.forward_addition()
     elif movement_choice == '.':
         fris.backward_movement()
-       # fris.backward_addition()
+    #update cube
     updateOut(fris.matrix())
-    fris.isWon()

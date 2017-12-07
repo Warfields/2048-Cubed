@@ -1,16 +1,16 @@
-import random
-import numpy as np
+import random # For creating new tiles
+import numpy as np # For arrays
 class game:
-    def __init__(self,i = 4 ,j = 4,k = 4):
-        self.game_box = np.zeros((i,j,k)) #initially making the 4*4*4 array's value 0 or "nothing" for all positions
+    def __init__(self): 
+        self.game_box = np.zeros((4,4,4)) #initially making the 4*4*4 array's value 0 or "nothing" for all positions
         first_position_list = [0,1,2,3]
-        first_row_to_begin = random.choice(first_position_list)
+        first_row_to_begin = random.choice(first_position_list) #Randomly generates starting pos
         first_column_to_begin = random.choice(first_position_list)
         first_depth_to_begin = random.choice(first_position_list)
         self.game_box[first_row_to_begin][first_column_to_begin][first_depth_to_begin] = 2 #placing the first 2 to begin the game in position selected randomly
-        self.points = 0
+        self.points = 0 #Score starts at zero
         
-    def matrix(self):
+    def matrix(self): # exports current gamestate
         return self.game_box
     def up_movement(self):
         #def up_movement(self.game_box): #function for up movement
@@ -32,7 +32,7 @@ class game:
                             self.game_box[i+3][j][k] = 0
                     if self.game_box[i+2][j][k] == 0 and self.game_box[i+3][j][k]!=0: #condition to check if the third member of a column is zero and member below it or the last member is non-zero         
                         while self.game_box[i+2]==0: #looping until the third member of a column becomes non-zero
-                            self.game_box[i+2][j][k] = self.game_box[i+3][j][k] #YOOOOOOOOOOOOOOOOOO I CHANGED THIS SHIT!!! THERE WAS ONLY i COLUMN, i ADDED THE REST
+                            self.game_box[i+2][j][k] = self.game_box[i+3][j][k] 
                             self.game_box[i+3][j][k] = 0
         self.up_addition()
     def up_addition(self):
@@ -278,7 +278,7 @@ class game:
                     self.game_box[i][j][k+1] = self.game_box[i][j][k+1] + self.game_box[i][j][k]
                     self.points += self.game_box[i][j][k+1] ** 2
                     self.game_box[i][j][k] = 0
-    def isWon(self):
+    def isWon(self): # If There are any 2048 tiles the player has won, Also addes new tiles to board
         row_indexes_with_zero = []
         column_indexes_with_zero = []
         depth_indexes_with_zero = []
@@ -306,12 +306,12 @@ class game:
             column_to_place_entry = column_indexes_with_zero[0]
             depth_to_place_entry = depth_indexes_with_zero[0]
             self.game_box[row_to_place_entry][column_to_place_entry][depth_to_place_entry] = 2
-    def printBoard(self):
-        print "Points>>>>>>"
-        #print (self.points)
-        print "\n\n"
-        print self.game_box[0][0][0],"\t",self.game_box[0][1][0],"\t",self.game_box[0][2][0],"\t",self.game_box[0][3][0],"\t","\t",self.game_box[0][0][1],"\t",self.game_box[0][1][1],"\t",self.game_box[0][2][1],"\t",self.game_box[0][3][1],"\t","\t",self.game_box[0][0][2],"\t",self.game_box[0][1][2],"\t",self.game_box[0][2][2],"\t",self.game_box[0][3][2],"\t","\t",self.game_box[0][0][3],"\t",self.game_box[0][1][3],"\t",self.game_box[0][2][3],"\t",self.game_box[0][3][3],"\n"
-        print self.game_box[1][0][0],"\t",self.game_box[1][1][0],"\t",self.game_box[1][2][0],"\t",self.game_box[1][3][0],"\t","\t",self.game_box[1][0][1],"\t",self.game_box[1][1][1],"\t",self.game_box[1][2][1],"\t",self.game_box[1][3][1],"\t","\t",self.game_box[1][0][2],"\t",self.game_box[1][1][2],"\t",self.game_box[1][2][2],"\t",self.game_box[1][3][2],"\t","\t",self.game_box[1][0][3],"\t",self.game_box[1][1][3],"\t",self.game_box[1][2][3],"\t",self.game_box[1][3][3],"\n"
-        print self.game_box[2][0][0],"\t",self.game_box[2][1][0],"\t",self.game_box[2][2][0],"\t",self.game_box[2][3][0],"\t","\t",self.game_box[2][0][1],"\t",self.game_box[2][1][1],"\t",self.game_box[2][2][1],"\t",self.game_box[2][3][1],"\t","\t",self.game_box[2][0][2],"\t",self.game_box[2][1][2],"\t",self.game_box[2][2][2],"\t",self.game_box[2][3][2],"\t","\t",self.game_box[2][0][3],"\t",self.game_box[2][1][3],"\t",self.game_box[2][2][3],"\t",self.game_box[2][3][3],"\n"
-        print self.game_box[3][0][0],"\t",self.game_box[3][1][0],"\t",self.game_box[3][2][0],"\t",self.game_box[3][3][0],"\t","\t",self.game_box[3][0][1],"\t",self.game_box[3][1][1],"\t",self.game_box[3][2][1],"\t",self.game_box[3][3][1],"\t","\t",self.game_box[3][0][2],"\t",self.game_box[3][1][2],"\t",self.game_box[3][2][2],"\t",self.game_box[3][3][2],"\t","\t",self.game_box[3][0][3],"\t",self.game_box[3][1][3],"\t",self.game_box[3][2][3],"\t",self.game_box[3][3][3],"\n"
+    def printBoard(self): # prints current board to terminal
+        print ("Points>>>>>>")
+        print( (self.points)
+        print ("\n\n")
+        print (self.game_box[0][0][0],"\t",self.game_box[0][1][0],"\t",self.game_box[0][2][0],"\t",self.game_box[0][3][0],"\t","\t",self.game_box[0][0][1],"\t",self.game_box[0][1][1],"\t",self.game_box[0][2][1],"\t",self.game_box[0][3][1],"\t","\t",self.game_box[0][0][2],"\t",self.game_box[0][1][2],"\t",self.game_box[0][2][2],"\t",self.game_box[0][3][2],"\t","\t",self.game_box[0][0][3],"\t",self.game_box[0][1][3],"\t",self.game_box[0][2][3],"\t",self.game_box[0][3][3],"\n")
+        print (self.game_box[1][0][0],"\t",self.game_box[1][1][0],"\t",self.game_box[1][2][0],"\t",self.game_box[1][3][0],"\t","\t",self.game_box[1][0][1],"\t",self.game_box[1][1][1],"\t",self.game_box[1][2][1],"\t",self.game_box[1][3][1],"\t","\t",self.game_box[1][0][2],"\t",self.game_box[1][1][2],"\t",self.game_box[1][2][2],"\t",self.game_box[1][3][2],"\t","\t",self.game_box[1][0][3],"\t",self.game_box[1][1][3],"\t",self.game_box[1][2][3],"\t",self.game_box[1][3][3],"\n")
+        print (self.game_box[2][0][0],"\t",self.game_box[2][1][0],"\t",self.game_box[2][2][0],"\t",self.game_box[2][3][0],"\t","\t",self.game_box[2][0][1],"\t",self.game_box[2][1][1],"\t",self.game_box[2][2][1],"\t",self.game_box[2][3][1],"\t","\t",self.game_box[2][0][2],"\t",self.game_box[2][1][2],"\t",self.game_box[2][2][2],"\t",self.game_box[2][3][2],"\t","\t",self.game_box[2][0][3],"\t",self.game_box[2][1][3],"\t",self.game_box[2][2][3],"\t",self.game_box[2][3][3],"\n")
+        print (self.game_box[3][0][0],"\t",self.game_box[3][1][0],"\t",self.game_box[3][2][0],"\t",self.game_box[3][3][0],"\t","\t",self.game_box[3][0][1],"\t",self.game_box[3][1][1],"\t",self.game_box[3][2][1],"\t",self.game_box[3][3][1],"\t","\t",self.game_box[3][0][2],"\t",self.game_box[3][1][2],"\t",self.game_box[3][2][2],"\t",self.game_box[3][3][2],"\t","\t",self.game_box[3][0][3],"\t",self.game_box[3][1][3],"\t",self.game_box[3][2][3],"\t",self.game_box[3][3][3],"\n")
         
