@@ -1,12 +1,21 @@
 #import game
-from game import game
+import game
 import RPi.GPIO as GPIO
-#import serial
-
+import time
+#Serial Pins
 SER = 25
 SRCLK = 26
 RCLK = 27
-#outputEn = 27 
+
+#Button Pins
+
+bUp = 5
+bDown = 6
+bLeft = 12
+bRight = 13
+bForward = 16
+bBack = 19
+
 
 #setup the pin mode for the GPIO 
 
@@ -18,7 +27,12 @@ GPIO.setwarnings(False)
 
 #setup the buttons
 
-#GPIO.setup(ReedPin, GPIO.IN, GPIO.PUD_UP)
+GPIO.setup(bUp, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(bDown, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(bLeft, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(bRight, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(bForward, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(bback, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 #setup the serial lines
 
