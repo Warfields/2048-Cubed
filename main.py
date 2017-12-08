@@ -1,4 +1,3 @@
-#import game
 import game from game # imports game class
 import RPi.GPIO as GPIO
 import time
@@ -50,29 +49,31 @@ GPIO.output(SER,0)
 GPIO.output(RCLK,0)
 
 def updateOut(gameOb): # send changes to LED matrix
-    #TODO GENERATE COLOR SCHEME
-    GPIO.output(RCLK, 0) # enable serail stream to registers
+    nums = gameop.matrix()
+    colors = np.zeros((4,4,4,3))
     state = gameOb.isWon()
+    
+    for i in range (0,4): # For each level
+        for j in range (0,4): # Row
+            for k in range (0,4): # Colomn
+            if nums.at(i,j,k) == 2 or nums.at(i,j,k) == 16 or nums.at(i,j,k) == 32: #enable red
+                colors.at(i,j,k,0) = 1
+            if nums.at(i,j,k) == 4 or nums.at(i,j,k) == 16 or nums.at(i,j,k) == 64: #enable green
+                colors.at(i,j,k,1) = 1
+            if nums.at(i,j,k) == 8 or nums.at(i,j,k) == 32 or nums.at(i,j,k) == 64: #enable blue
+                colors.at(i,j,k,2) = 1
+    
+    GPIO.output(RCLK, 0) # enable serail stream to registers
+    
     for c in range(0,3): # for each of 3 colors (Red then green then blue)
         for k in range (0,4): # For each level
             for i in range (0,4): # Row
                 for j in range (0,4): # Colomn
-                    #begin data shift out; TODO: Finish this code
-                    
+                    #begin data shift out;
+                    GPIO.output(SER, colors[i][j][k][c])
                     GPIO.output(SRCLK,1)
-                    time.sleep(.0005)
+                    time.sleep(.0005) #Pi Clock speed is too high for registers
                     GPIO.output(SRCLK,0)
-                    if c == 0 & (0):
-                        print "1"
-
-                        
-                        #Output Red
-                    if c == 1:
-                        print 2
-                        #Green
-                    if c == 2:
-                        #Blue
-                        print 3
     
     #Clock Register. This latches the current state of the serial buffer to the output
     #register, updating the cube;

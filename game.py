@@ -309,7 +309,7 @@ class game:
         return False
     def printBoard(self): # prints current board to terminal
         print ("Points>>>>>>")
-        print( (self.points)
+        print (self.points)
         print ("\n\n")
         print (self.game_box[0][0][0],"\t",self.game_box[0][1][0],"\t",self.game_box[0][2][0],"\t",self.game_box[0][3][0],"\t","\t",self.game_box[0][0][1],"\t",self.game_box[0][1][1],"\t",self.game_box[0][2][1],"\t",self.game_box[0][3][1],"\t","\t",self.game_box[0][0][2],"\t",self.game_box[0][1][2],"\t",self.game_box[0][2][2],"\t",self.game_box[0][3][2],"\t","\t",self.game_box[0][0][3],"\t",self.game_box[0][1][3],"\t",self.game_box[0][2][3],"\t",self.game_box[0][3][3],"\n")
         print (self.game_box[1][0][0],"\t",self.game_box[1][1][0],"\t",self.game_box[1][2][0],"\t",self.game_box[1][3][0],"\t","\t",self.game_box[1][0][1],"\t",self.game_box[1][1][1],"\t",self.game_box[1][2][1],"\t",self.game_box[1][3][1],"\t","\t",self.game_box[1][0][2],"\t",self.game_box[1][1][2],"\t",self.game_box[1][2][2],"\t",self.game_box[1][3][2],"\t","\t",self.game_box[1][0][3],"\t",self.game_box[1][1][3],"\t",self.game_box[1][2][3],"\t",self.game_box[1][3][3],"\n")
