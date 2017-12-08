@@ -1,5 +1,5 @@
 #import game
-import game
+import game from game # imports game class
 import RPi.GPIO as GPIO
 import time
 #Serial Pins
@@ -9,13 +9,12 @@ RCLK = 27
 
 #Button Pins
 
-bUp = 5
-bDown = 6
-bLeft = 12
-bRight = 13
+bUp      = 5
+bDown    = 6
+bLeft    = 12
+bRight   = 13
 bForward = 16
-bBack = 19
-
+bBack    = 19
 
 #setup the pin mode for the GPIO 
 
@@ -50,8 +49,6 @@ GPIO.output(SRCLK,0)
 GPIO.output(SER,0)
 GPIO.output(RCLK,0)
 
-fris = game() #intailize a game object
-
 def updateOut(matrix): # send changes to LED matrix
     #TODO GENERATE COLOR SCHEME
     GPIO.output(RCLK, 0) # enable serail stream to registers
@@ -61,7 +58,7 @@ def updateOut(matrix): # send changes to LED matrix
             for i in range (0,4): # Row
                 for j in range (0,4): # Colomn
                     #begin data shift out; TODO: Finish this code
-                    loop += 1
+                    
                     GPIO.output(SRCLK,1)
                     time.sleep(.0005)
                     GPIO.output(SRCLK,0)
@@ -81,21 +78,44 @@ def updateOut(matrix): # send changes to LED matrix
     #register, updating the cube;
     GPIO.output(RCLK, 1)
 
+fris = game() #intailize a game object
+
+#Set Interupts for buttons. Starting with translations
+GPIO.add_event_detect(bUp     , GPIO.RISING, callback = fris.up_movement(), bouncetime = 25)
+GPIO.add_event_detect(bDown   , GPIO.RISING, callback = fris.down_movement(), bouncetime = 25)
+GPIO.add_event_detect(bLeft   , GPIO.RISING, callback = fris.left_movement(), bouncetime = 25)
+GPIO.add_event_detect(bRight  , GPIO.RISING, callback = fris.right_movement(), bouncetime = 25)
+GPIO.add_event_detect(bForward, GPIO.RISING, callback = fris.forward_movement(), bouncetime = 25)
+GPIO.add_event_detect(bBack   , GPIO.RISING, callback = fris.backward_movement(), bouncetime = 25)
+
+#Check for win and update board with new random pieces
+GPIO.add_event_detect(bUp     , GPIO.FALLING, callback = fris.isWon(), bouncetime = 25)
+GPIO.add_event_detect(bDown   , GPIO.FALLING, callback = fris.isWon(), bouncetime = 25)
+GPIO.add_event_detect(bLeft   , GPIO.FALLING, callback = fris.isWon(), bouncetime = 25)
+GPIO.add_event_detect(bRight  , GPIO.FALLING, callback = fris.isWon(), bouncetime = 25)
+GPIO.add_event_detect(bForward, GPIO.FALLING, callback = fris.isWon(), bouncetime = 25)
+GPIO.add_event_detect(bBack   , GPIO.FALLING, callback = fris.isWon(), bouncetime = 25)
+
+textPlay = input("Enable text game? (y/n) ") #Taking user input for the movement choice
+
 while(not (fris.isWon())): # main game loop
-    fris.printBoard() # prints the current game board to terminal (Debug / if you don't have an LED Cube)
-    movement_choice = input("Make your move::::>>>>    ") #Taking user input for the movement choice
-    #TODO update If statements
-    if movement_choice == "w":
-        fris.up_movement()
-    elif movement_choice == "s":
-        fris.down_movement()
-    elif movement_choice == "a":
-        fris.left_movement()
-    elif movement_choice == "d":
-        fris.right_movement()
-    elif movement_choice == ",":
-        fris.forward_movement()
-    elif movement_choice == '.':
-        fris.backward_movement()
-    #update cube
-    updateOut(fris.matrix())
+    if (textPlay == 'y' or textPlay == 'Y' )
+        fris.printBoard() # prints the current game board to terminal (Debug / if you don't have an LED Cube)
+        movement_choice = input("Make your move::::>>>>    ") #Taking user input for the movement choice
+        if movement_choice == "w":
+            fris.up_movement()
+        elif movement_choice == "s":
+            fris.down_movement()
+        elif movement_choice == "a":
+            fris.left_movement()
+        elif movement_choice == "d":
+            fris.right_movement()
+        elif movement_choice == ",":
+            fris.forward_movement()
+        elif movement_choice == '.':
+            fris.backward_movement()
+        #update cube
+        updateOut(fris.matrix())
+    else:
+        movement_choice = input("Press enter to show current board: ")
+        fris.printBoard()

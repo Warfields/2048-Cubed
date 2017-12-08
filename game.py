@@ -14,7 +14,7 @@ class game:
         return self.game_box
     def up_movement(self):
         #def up_movement(self.game_box): #function for up movement
-        i =0
+        i = 0
         for k in range(0,4): #looping through all 2D matrix's in cube
             for j in range(0,4): #looping through all four 4 columns
                 if self.game_box[i][j][k]!=0 or self.game_box[i+1][j][k]!=0 or self.game_box[i+2][j][k]!=0 or self.game_box[i+3][j][k]!=0: #condition to check whether any members of a column is non-zero to proceed
