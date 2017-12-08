@@ -26,12 +26,12 @@ GPIO.setwarnings(False)
 
 #setup the buttons
 
-GPIO.setup(bUp, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(bDown, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(bLeft, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(bRight, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(bUp     , GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(bDown   , GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(bLeft   , GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(bRight  , GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(bForward, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(bBack, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(bBack   , GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 #setup the serial lines
 
@@ -49,10 +49,10 @@ GPIO.output(SRCLK,0)
 GPIO.output(SER,0)
 GPIO.output(RCLK,0)
 
-def updateOut(matrix): # send changes to LED matrix
+def updateOut(gameOb): # send changes to LED matrix
     #TODO GENERATE COLOR SCHEME
     GPIO.output(RCLK, 0) # enable serail stream to registers
-
+    state = gameOb.isWon()
     for c in range(0,3): # for each of 3 colors (Red then green then blue)
         for k in range (0,4): # For each level
             for i in range (0,4): # Row
@@ -73,32 +73,33 @@ def updateOut(matrix): # send changes to LED matrix
                     if c == 2:
                         #Blue
                         print 3
-
+    
     #Clock Register. This latches the current state of the serial buffer to the output
     #register, updating the cube;
     GPIO.output(RCLK, 1)
+    return state # Used to end game
 
 fris = game() #intailize a game object
 
 #Set Interupts for buttons. Starting with translations
-GPIO.add_event_detect(bUp     , GPIO.RISING, callback = fris.up_movement(), bouncetime = 25)
-GPIO.add_event_detect(bDown   , GPIO.RISING, callback = fris.down_movement(), bouncetime = 25)
-GPIO.add_event_detect(bLeft   , GPIO.RISING, callback = fris.left_movement(), bouncetime = 25)
-GPIO.add_event_detect(bRight  , GPIO.RISING, callback = fris.right_movement(), bouncetime = 25)
-GPIO.add_event_detect(bForward, GPIO.RISING, callback = fris.forward_movement(), bouncetime = 25)
+GPIO.add_event_detect(bUp     , GPIO.RISING, callback = fris.up_movement()      , bouncetime = 25)
+GPIO.add_event_detect(bDown   , GPIO.RISING, callback = fris.down_movement()    , bouncetime = 25)
+GPIO.add_event_detect(bLeft   , GPIO.RISING, callback = fris.left_movement()    , bouncetime = 25)
+GPIO.add_event_detect(bRight  , GPIO.RISING, callback = fris.right_movement()   , bouncetime = 25)
+GPIO.add_event_detect(bForward, GPIO.RISING, callback = fris.forward_movement() , bouncetime = 25)
 GPIO.add_event_detect(bBack   , GPIO.RISING, callback = fris.backward_movement(), bouncetime = 25)
 
 #Check for win and update board with new random pieces
-GPIO.add_event_detect(bUp     , GPIO.FALLING, callback = fris.isWon(), bouncetime = 25)
-GPIO.add_event_detect(bDown   , GPIO.FALLING, callback = fris.isWon(), bouncetime = 25)
-GPIO.add_event_detect(bLeft   , GPIO.FALLING, callback = fris.isWon(), bouncetime = 25)
-GPIO.add_event_detect(bRight  , GPIO.FALLING, callback = fris.isWon(), bouncetime = 25)
-GPIO.add_event_detect(bForward, GPIO.FALLING, callback = fris.isWon(), bouncetime = 25)
-GPIO.add_event_detect(bBack   , GPIO.FALLING, callback = fris.isWon(), bouncetime = 25)
+GPIO.add_event_detect(bUp     , GPIO.FALLING, callback = updateOut(fris), bouncetime = 25)
+GPIO.add_event_detect(bDown   , GPIO.FALLING, callback = updateOut(fris), bouncetime = 25)
+GPIO.add_event_detect(bLeft   , GPIO.FALLING, callback = updateOut(fris), bouncetime = 25)
+GPIO.add_event_detect(bRight  , GPIO.FALLING, callback = updateOut(fris), bouncetime = 25)
+GPIO.add_event_detect(bForward, GPIO.FALLING, callback = updateOut(fris), bouncetime = 25)
+GPIO.add_event_detect(bBack   , GPIO.FALLING, callback = updateOut(fris), bouncetime = 25)
 
 textPlay = input("Enable text game? (y/n) ") #Taking user input for the movement choice
 
-while(not (fris.isWon())): # main game loop
+while(1): # main game loop
     if (textPlay == 'y' or textPlay == 'Y' )
         fris.printBoard() # prints the current game board to terminal (Debug / if you don't have an LED Cube)
         movement_choice = input("Make your move::::>>>>    ") #Taking user input for the movement choice
@@ -115,7 +116,8 @@ while(not (fris.isWon())): # main game loop
         elif movement_choice == '.':
             fris.backward_movement()
         #update cube
-        updateOut(fris.matrix())
+        if (updateOut(fris)):
+            break
     else:
         movement_choice = input("Press enter to show current board: ")
         fris.printBoard()

@@ -306,6 +306,7 @@ class game:
             column_to_place_entry = column_indexes_with_zero[0]
             depth_to_place_entry = depth_indexes_with_zero[0]
             self.game_box[row_to_place_entry][column_to_place_entry][depth_to_place_entry] = 2
+        return False
     def printBoard(self): # prints current board to terminal
         print ("Points>>>>>>")
         print( (self.points)
